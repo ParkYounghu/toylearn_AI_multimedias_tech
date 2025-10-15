@@ -1,13 +1,4 @@
 ```
-[Gemini prompt]
-위 링크를 분석해서 밑에 형식을 markdown 코드블럭을 넣어서 편집기에 넣는 형식으로 바꿔줘
-
-
-
-[형식]
-
- 
-
 https://docs.google.com/document/d/1fLYF4f525W5Vr3MRjYOq9xNbXy4pJE-3f89dfjAxOxA/edit?tab=t.0
 
 
@@ -15,7 +6,7 @@ https://docs.google.com/document/d/1fLYF4f525W5Vr3MRjYOq9xNbXy4pJE-3f89dfjAxOxA/
 위 링크를 분석해서 밑에 형식을 markdown 코드블럭을 넣어서 편집기에 넣는 형식으로 바꿔줘
 
 출처 표시 없어도 되고, 내가 표시한 것 외에 중요하거나, 결론을 내는 말들은 **로 강조해줘
-
+```
 
 
 [형식]

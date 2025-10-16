@@ -1,0 +1,195 @@
+{
+  "name": "03_action_nodes_rss",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "8393460352",
+        "text": "=n8n 에서 보냅니다 \n\n제목 : {{ $json.title }}\n발행일 : {{ $json.isoDate }}\n링크 : {{ $json.link }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        288
+      ],
+      "id": "fa9372cc-3be5-4f44-8d4b-7a56355b035e",
+      "name": "Send a text message",
+      "webhookId": "cdc9bb16-9841-4c38-b53d-2d3bf52cfb63",
+      "credentials": {
+        "telegramApi": {
+          "id": "aUj1Xl8gOorneCeB",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        240
+      ],
+      "id": "5c7ae353-6463-4930-a7e5-30993c05771c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://news.google.com/rss/headlines/section/tech?hl=ko&gl=KR&ceid=KR:ko",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        320
+      ],
+      "id": "bcfb3c82-0bbe-4813-8a30-4d3c4897b290",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        656,
+        320
+      ],
+      "id": "3893e945-99a3-4d9e-8743-e309416c87ff",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "url": "https://www.yna.co.kr/rss/industry.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        432,
+        32
+      ],
+      "id": "5bf2efaf-f76e-4f58-ab08-db1b10ed1b21",
+      "name": "RSS Read1"
+    },
+    {
+      "parameters": {
+        "chatId": "8393460352",
+        "text": "=n8n 에서 보냅니다 \n\n제목 : {{ $json.title }}\n발행일 : {{ $json.isoDate }}\n링크 : {{ $json.link }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        0
+      ],
+      "id": "c24f440c-3418-414b-90d2-913fd4872e9b",
+      "name": "Send a text message1",
+      "webhookId": "cdc9bb16-9841-4c38-b53d-2d3bf52cfb63",
+      "credentials": {
+        "telegramApi": {
+          "id": "aUj1Xl8gOorneCeB",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keep": "lastItems"
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        688,
+        16
+      ],
+      "id": "e6c7fc6a-7a72-490e-8a94-e2c88b3e50c8",
+      "name": "Limit1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "RSS Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read1": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2c502d72-30d5-4ad9-bf9e-09a7a1482ddc",
+  "meta": {
+    "instanceId": "9e264b27a1bf7c94c957e20ec34104e2f1628f4efbfa997ecb6d9d1704efa76f"
+  },
+  "id": "gZrCjbH0efuECDqp",
+  "tags": []
+}

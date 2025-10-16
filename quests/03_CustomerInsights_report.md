@@ -3,6 +3,8 @@ https://docs.google.com/spreadsheets/d/1KZlqe6HvfufWMOejrlQbxfvGMaH_25KUrYMoUsJZ
 
 
 
+너는 20년차 기업 컨설팅 전문가야.
+
 위 링크를 분석해서 내가 제시한 주제로 인사이트를 만들어줘
 
 결론이나, 단원을 상징하는 단어들은 강조표시를 넣어줘

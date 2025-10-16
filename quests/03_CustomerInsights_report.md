@@ -9,6 +9,7 @@ https://docs.google.com/spreadsheets/d/1KZlqe6HvfufWMOejrlQbxfvGMaH_25KUrYMoUsJZ
 
 markdown 코드블럭을 써서 편집기에 넣는 형식으로 만들어줘
 
+출처 같은 표시는 제외
 
 
 

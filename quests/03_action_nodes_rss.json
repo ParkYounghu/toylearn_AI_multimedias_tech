@@ -3,28 +3,6 @@
   "nodes": [
     {
       "parameters": {
-        "chatId": "8393460352",
-        "text": "=n8n 에서 보냅니다 \n\n제목 : {{ $json.title }}\n발행일 : {{ $json.isoDate }}\n링크 : {{ $json.link }}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        992,
-        288
-      ],
-      "id": "fa9372cc-3be5-4f44-8d4b-7a56355b035e",
-      "name": "Send a text message",
-      "webhookId": "cdc9bb16-9841-4c38-b53d-2d3bf52cfb63",
-      "credentials": {
-        "telegramApi": {
-          "id": "aUj1Xl8gOorneCeB",
-          "name": "Telegram account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "rule": {
           "interval": [
             {
@@ -152,7 +130,7 @@
       "main": [
         [
           {
-            "node": "Send a text message",
+            "node": "Send a text message1",
             "type": "main",
             "index": 0
           }

@@ -159,7 +159,7 @@
         "messages": {
           "values": [
             {
-              "content": "=당신은 정리의 신이야\n기사 내용을 일부 간략화 해줘\n입력 값 중 content필드 값을 분석하여 10자로 요약해줘\n나머지 필드들은 다 삭제\n\n## 출력예시\n\"title\" : {{ $json.title }},\n\"link\" : {{ $json.link }},\n\"content\" : {{ $json.content }},\n\"isodate\" : {{ $json.isoDate }}"
+              "content": "=당신은 정리의 신이야\n기사 내용을 일부 간략화 해줘\n입력 값 중 content필드 값을 분석하여 10자로 요약해줘\n나머지 필드들은 다 삭제\n\n## 출력예시\n\n\"content\" : {{ $json.content }},\n"
             }
           ]
         },

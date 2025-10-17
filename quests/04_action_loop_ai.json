@@ -1,0 +1,293 @@
+{
+  "name": "04_action_loop_ai",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1136,
+        -144
+      ],
+      "id": "aca898df-3782-41d5-b713-52193add58d6",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"feeds\" : [\n  \"https://news.sbs.co.kr/news/Subusu_RssFeed.do?plink=RSSREADER\"\n \n  ]\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -896,
+        -144
+      ],
+      "id": "895ef8d1-3327-4f4a-b27f-3745a812c5dd",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "feeds",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -128
+      ],
+      "id": "5e338d8c-6bbe-489b-be9c-3706562aa565",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -48,
+        -112
+      ],
+      "id": "1a911458-f3dc-4640-884e-0c41ce2633a6",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "https://www.yna.co.kr/rss/industry.xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "faff3cbf-9b6f-42c0-b7cd-21c689ff5e0e",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        416,
+        -16
+      ],
+      "id": "f0da9d1e-1c3f-4cdb-96e5-6beb72a92482",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "407f974b-4aeb-4310-962b-fd6b33a4d899",
+              "name": "title",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "fdc87070-2b1b-4878-b67c-959fccaa7e90",
+              "name": "link",
+              "value": "={{ $json.link }}",
+              "type": "string"
+            },
+            {
+              "id": "8885a425-aaa9-48db-b37a-1d0de5f56a0f",
+              "name": "content",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "40d6e027-40a6-47f0-a840-bf882e06b870",
+              "name": "isoDate",
+              "value": "={{ $json.isoDate }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        -224
+      ],
+      "id": "e2d669ce-589d-4b69-92f5-b41d0f603ed0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "chatId": "8393460352",
+        "text": "={{ $json.content.parts[0].text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1328,
+        -224
+      ],
+      "id": "88dcf728-1156-476b-8514-410c01d221f8",
+      "name": "Send a text message",
+      "webhookId": "264fd3d7-8c05-4209-88b2-fb5d74ea1daa",
+      "credentials": {
+        "telegramApi": {
+          "id": "lTPqbYoMequ4io06",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=당신은 정리의 신이야\n기사 내용을 일부 간략화 해줘\n입력 값 중 content필드 값을 분석하여 10자로 요약해줘\n나머지 필드들은 다 삭제\n\n## 출력예시\n\"title\" : {{ $json.title }},\n\"link\" : {{ $json.link }},\n\"content\" : {{ $json.content }},\n\"isodate\" : {{ $json.isoDate }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -224
+      ],
+      "id": "98dcffe9-9f22-4ebd-a8be-d9a2df03b57d",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Yi6PAQae7jAVfUHA",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "042a4c4e-51cc-44ae-9d45-11005a23e630",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9e264b27a1bf7c94c957e20ec34104e2f1628f4efbfa997ecb6d9d1704efa76f"
+  },
+  "id": "xkuSuKpy4afntEtA",
+  "tags": []
+}

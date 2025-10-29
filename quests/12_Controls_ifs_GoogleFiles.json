@@ -1,0 +1,1522 @@
+{
+  "name": "12_Controls_ifs_GoogleFiles",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFolder",
+        "folderToWatch": {
+          "__rl": true,
+          "value": "1HiLv33vmVLnqJR-AcMuEwPtUBk-5AbSh",
+          "mode": "list",
+          "cachedResultName": "triggers",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1HiLv33vmVLnqJR-AcMuEwPtUBk-5AbSh"
+        },
+        "event": "fileCreated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        -64
+      ],
+      "id": "659086e4-e290-4df2-aabf-65608d464666",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3c5e4a6-080d-40fc-aba8-6e208d1c54af",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.document",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        -64
+      ],
+      "id": "40cf2636-3e88-421c-a742-37faf5dbed81",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "시트1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1J0UI8iSu69JYafEmue1jNEctECrTjF1CI9X9MQzVU04/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        96
+      ],
+      "id": "6d01e190-fe86-4c20-bb89-ff83834a6d5c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=분석 내용 한 줄로 정리\n{{ JSON.stringify($json)}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        800,
+        48
+      ],
+      "id": "73ccc797-56f4-45da-b3f0-248f13a6ab70",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "155Nng0zla4eywg1",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g",
+          "mode": "list",
+          "cachedResultName": "1029 history",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EYkh5DiyUi2rPBtfND8gVBquXms2MH_NOwsCv_bJ4Tc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "한 줄 정리": "={{ $json.content.parts[0].text }}",
+            "입력 날짜": "={{ $('Google Drive Trigger').item.json.createdTime }}",
+            "파일 종류": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "파일 링크": "={{ $('Google Drive Trigger').item.json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "파일명"
+          ],
+          "schema": [
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "입력 날짜",
+              "displayName": "입력 날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 종류",
+              "displayName": "파일 종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 링크",
+              "displayName": "파일 링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        48
+      ],
+      "id": "7049e026-b3a8-4b31-8211-82f4a315198a",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "주요 긍정 피드백"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        592,
+        48
+      ],
+      "id": "88d098bd-9632-4638-99a5-6a306ce1f9f6",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Google Drive Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -160
+      ],
+      "id": "86ec9dbb-25f3-4cea-9463-fbda59c2d471",
+      "name": "Get a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7dEvZljR7UOpREAW",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "content"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -160
+      ],
+      "id": "7c26d161-1799-43cf-bd89-72789152948d",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=결정사항 1줄 요약\n{{ $json.content[0] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        176,
+        -160
+      ],
+      "id": "392cd945-1b73-4e6b-8443-53b368fc67ce",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "155Nng0zla4eywg1",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g",
+          "mode": "list",
+          "cachedResultName": "1029 history",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EYkh5DiyUi2rPBtfND8gVBquXms2MH_NOwsCv_bJ4Tc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "입력 날짜": "={{ $('Google Drive Trigger').item.json.createdTime }}",
+            "한 줄 정리": "={{ $json.content.parts[0].text }}",
+            "파일 종류": "={{ $('If').item.json.mimeType }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "파일 링크": "={{ $('If').item.json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "파일명"
+          ],
+          "schema": [
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "입력 날짜",
+              "displayName": "입력 날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 종류",
+              "displayName": "파일 종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 링크",
+              "displayName": "파일 링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        -160
+      ],
+      "id": "ebc45d01-8938-437b-9788-7c8e29141259",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "11b48ac8-6d79-4d13-bd5d-165689a618b8",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "application/vnd.google-apps.spreadsheet",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -224,
+        112
+      ],
+      "id": "5fd7ab18-1931-4403-adf2-da5ec91d4e41",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        960,
+        304
+      ],
+      "id": "c5fd7a2f-fecb-4f9f-b764-a481b57f444f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4d156f30-d824-422e-b739-5cdbdb7fa7fe",
+              "leftValue": "={{ $json.mimeType }}",
+              "rightValue": "text/csv",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        288
+      ],
+      "id": "852fd590-880c-4948-ab89-cb06e03b8dcc",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "chatId": "8393460352",
+        "text": "목록에 해당하지 않는 파일 종류입니다",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1312,
+        800
+      ],
+      "id": "b7366791-5383-4142-a752-fb38ee33b5e3",
+      "name": "Send a text message",
+      "webhookId": "a11b3395-a2ff-4c75-8073-b233f04daf51",
+      "credentials": {
+        "telegramApi": {
+          "id": "S3FySHB0Ik9OaYKL",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g",
+          "mode": "list",
+          "cachedResultName": "1029 history",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EYkh5DiyUi2rPBtfND8gVBquXms2MH_NOwsCv_bJ4Tc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "입력 날짜": "={{ $('Google Drive Trigger').item.json.createdTime }}",
+            "한 줄 정리": "=csv 파일입니다",
+            "파일 종류": "={{ $('If').item.json.mimeType }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "파일 링크": "={{ $('If').item.json.webViewLink }}"
+          },
+          "matchingColumns": [
+            "파일명"
+          ],
+          "schema": [
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "입력 날짜",
+              "displayName": "입력 날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 종류",
+              "displayName": "파일 종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 링크",
+              "displayName": "파일 링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        304
+      ],
+      "id": "25166955-4983-4c08-9020-990f9539d223",
+      "name": "Append or update row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        624,
+        240
+      ],
+      "id": "a73542d2-2ea4-4259-be98-be833a0d64b7",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g",
+          "mode": "list",
+          "cachedResultName": "1029 history",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EYkh5DiyUi2rPBtfND8gVBquXms2MH_NOwsCv_bJ4Tc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "입력 날짜": "={{ $('Google Drive Trigger').item.json.createdTime }}",
+            "파일 종류": "={{ $('If').item.json.mimeType }}",
+            "파일명": "={{ $('Google Drive Trigger').item.json.name }}",
+            "파일 링크": "={{ $('If').item.json.webViewLink }}",
+            "한 줄 정리": "해당 파일은 목록에 해당하지 않아 etcs 폴더로 이동되었습니다."
+          },
+          "matchingColumns": [
+            "파일명"
+          ],
+          "schema": [
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "입력 날짜",
+              "displayName": "입력 날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 종류",
+              "displayName": "파일 종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 링크",
+              "displayName": "파일 링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        880,
+        816
+      ],
+      "id": "6f23dcdc-de17-4fd9-abf3-24e0913be2d4",
+      "name": "Append or update row in sheet3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1_Uk9XlZ0lJYmZK8wMElSY1XNqjdp9Ldz",
+          "mode": "list",
+          "cachedResultName": "docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1_Uk9XlZ0lJYmZK8wMElSY1XNqjdp9Ldz"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        736,
+        -160
+      ],
+      "id": "58b21385-e5f0-4ef1-9643-c47ccbb6bf0c",
+      "name": "docs",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1pFiBj6aDZ0Ljkvtvu_A9IIcdPAIG0_II",
+          "mode": "list",
+          "cachedResultName": "sheets",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1pFiBj6aDZ0Ljkvtvu_A9IIcdPAIG0_II"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1312,
+        48
+      ],
+      "id": "f4103ba8-b228-4a59-bba5-3afa12436fdb",
+      "name": "sheets",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1udtC2M3KTCFKs-UmH4cv9S9z1VZALkfl",
+          "mode": "list",
+          "cachedResultName": "csvs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1udtC2M3KTCFKs-UmH4cv9S9z1VZALkfl"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1952,
+        304
+      ],
+      "id": "c56f36cf-b85f-48a5-bd2a-aa3a0a6ba783",
+      "name": "csvs",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1GWT8SY4p4Kydo8gAeUm9Z8QxgCnSwLAl",
+          "mode": "list",
+          "cachedResultName": "etcs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1GWT8SY4p4Kydo8gAeUm9Z8QxgCnSwLAl"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        576,
+        768
+      ],
+      "id": "0ef2b0ed-ceba-4095-a261-a23a18087749",
+      "name": "etcs",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "67658f72-a840-49b6-b668-6efdb27e1028",
+              "leftValue": "={{ $('If2').item.json.mimeType }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        480
+      ],
+      "id": "6f0e8894-d862-4d11-b55c-c507eccda2f3",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        864,
+        512
+      ],
+      "id": "cdbe640b-2ada-4cb8-a4bc-8a22de3f88ac",
+      "name": "Download file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1072,
+        512
+      ],
+      "id": "f38fb347-3945-4a2a-b41d-c9e0b947e4e2",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g",
+          "mode": "list",
+          "cachedResultName": "1029 history",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HO0NQP1nTmt4ZSwJQa32EnVMSedoXo1uBBRqDd_CP6g/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "한 줄 정리": "={{ $json.content.parts[0].text }}",
+            "입력 날짜": "={{ $('Google Drive Trigger').item.json.modifiedTime }}",
+            "파일 종류": "={{ $('Google Drive Trigger').item.json.mimeType }}",
+            "파일 링크": "={{ $('Google Drive Trigger').item.json.webViewLink }}",
+            "파일명": "={{ $('If').item.json.name }}"
+          },
+          "matchingColumns": [
+            "파일명"
+          ],
+          "schema": [
+            {
+              "id": "한 줄 정리",
+              "displayName": "한 줄 정리",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "입력 날짜",
+              "displayName": "입력 날짜",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일 종류",
+              "displayName": "파일 종류",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "파일명",
+              "displayName": "파일명",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "파일 링크",
+              "displayName": "파일 링크",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1808,
+        512
+      ],
+      "id": "ed3aa826-aff9-47f5-9ef0-e023ac38d863",
+      "name": "Append or update row in sheet4",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "HHtUKURVH9DVIfub",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d9bfa8f0-fbb9-4cbc-aa9b-0bd14f556a39",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1280,
+        512
+      ],
+      "id": "34016ed9-1bf4-4e01-9de3-c42b8f3b1790",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=해당 사항 1줄 요약\n{{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        512
+      ],
+      "id": "4a77daa5-e92d-41be-b1ad-47fc97e5ea16",
+      "name": "pdfs",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "155Nng0zla4eywg1",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive Trigger').item.json.id }}",
+          "mode": "id"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1Ntdjgm2CKCk5ncKL4zlI8Xrhs6kj86yQ",
+          "mode": "list",
+          "cachedResultName": "pdfs(n8ns)",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1Ntdjgm2CKCk5ncKL4zlI8Xrhs6kj86yQ"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2016,
+        496
+      ],
+      "id": "5a56dab8-9a2b-45fd-97fa-b309bb54791a",
+      "name": "csvs1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "9WM8AQgklNhtNTRO",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "주요 긍정 피드백"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1168,
+        304
+      ],
+      "id": "74310029-041a-4205-866a-293cd733068e",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=해당 내용 한 줄로 정리\n{{ $json['주요 긍정 피드백'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        288
+      ],
+      "id": "e826f67b-598f-47e7-8078-9235f19a6156",
+      "name": "csvs2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "155Nng0zla4eywg1",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a document",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "csvs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet3": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "etcs": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Download file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "etcs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "pdfs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pdfs": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet4": {
+      "main": [
+        [
+          {
+            "node": "csvs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "csvs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "csvs2": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0b3ca2b4-11de-4898-9df1-ccc2520f3bab",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "2a11b109e521355ce138dcc9c539d7ecd9ad536d4e1b55d3f353b61d224d8c68"
+  },
+  "id": "OAqGTwPjl7VOqF3p",
+  "tags": []
+}

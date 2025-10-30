@@ -13,7 +13,7 @@ https://drive.google.com/file/d/1cbT7YMv8iOZmInRRpssFsDJhgedSYzaQ/view?usp=shari
 
 
 
-너는 분석을 20년간 분석전문가야.
+너는 분석을 20년 동안 해본 분석전문가야.
 
 위 링크의 내용을 바탕으로 내가 얘기하는 사항을 참고해서 작성해줘
 

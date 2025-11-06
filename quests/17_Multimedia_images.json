@@ -1,0 +1,136 @@
+{
+  "name": "17_Multimedia_images",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "candidates[0].content.parts[1].inlineData.data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        -80
+      ],
+      "id": "55d509d6-f57e-49d2-9a6d-8baa56ec2184",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "input_image",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -80
+      ],
+      "id": "50e27bc5-7555-47d5-b764-62d2409d8410",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "formTitle": "프롬프트로 결과 받기",
+        "formDescription": "프롬프트로 결과 받기",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "input_image",
+              "fieldType": "file"
+            },
+            {
+              "fieldLabel": "프롬프트 생성"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -784,
+        -64
+      ],
+      "id": "e5b1e073-0249-4728-a760-8aa4c9175e2c",
+      "name": "On form submission1",
+      "webhookId": "078ad7e5-c24f-48bd-a378-769e84d9f679"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyCE2aAhOGhrVEAcjU55I5x-lOBt7IkRLp4"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"{{ $('On form submission1').item.json['프롬프트 생성'] }}\"\n        },\n        {\n          \"inline_data\": {\n            \"mime_type\": \"{{ $('On form submission1').item.json.input_image[0].mimetype }}\",\n            \"data\": \"{{ $json.data }}\"\n          }\n        }\n      ]\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -256,
+        -80
+      ],
+      "id": "54cbc9fd-1587-4b47-bb50-6500628dc98f",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "443761e8-5f6b-4bf0-bafb-602529a6e348",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "97a4fc634bee8b70b897216f48a1db5b0a10c900708846c1b83e8e575b90ac50"
+  },
+  "id": "GSA6hTk9K9adlkC4",
+  "tags": []
+}

@@ -1,3 +1,5 @@
+```
+
 ~ $ pwd
 /home/node
 ~ $ cd Commands && pwd
@@ -13,3 +15,5 @@ test
 docs    images  note    test    videos
 ~/Commands $ cd docs && cd .. && ls
 docs    images  note    test    videos
+
+```

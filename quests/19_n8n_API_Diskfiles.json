@@ -1,0 +1,389 @@
+{
+  "name": "19_n8n_API_Diskfiles",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "음성 파일 생성",
+        "formDescription": "텍스트 입력 -> 음성 파일 생성",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "음성 프롬프트",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1760,
+        -224
+      ],
+      "id": "7e92f1c7-64f7-4e25-92be-4c13665fe831",
+      "name": "On form submission",
+      "webhookId": "af738a60-0dbd-4afb-9574-9cdf4963d16f"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyCE2aAhOGhrVEAcjU55I5x-lOBt7IkRLp4"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n        \"contents\": [{\n          \"parts\":[{\n            \"text\": \"{{ $('Get row(s) in sheet').item.json.Narration }}\"\n          }]\n        }],\n        \"generationConfig\": {\n          \"responseModalities\": [\"AUDIO\"],\n          \"speechConfig\": {\n            \"voiceConfig\": {\n              \"prebuiltVoiceConfig\": {\n                \"voiceName\": \"Kore\"\n              }\n            }\n          }\n        }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        288,
+        -272
+      ],
+      "id": "182130b4-706b-40ce-9f0f-2263a8cfbfc4",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "=candidates[0].content.parts[0].inlineData.data",
+        "options": {
+          "fileName": "=output{{ $('Loop Over Items').item.json.row_number }}.pcm "
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        -272
+      ],
+      "id": "42f77d7f-bdb1-4bd4-9ac1-763cb65e88c8",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Edit Fields').item.json.resources_dir }}voice{{ $('Loop Over Items').item.json.row_number }}.pcm",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        960,
+        -240
+      ],
+      "id": "20fb9936-c226-441f-9e37-e9f164a480dc",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $('Edit Fields').item.json.resources_dir }} &&\nffmpeg -f s16le -ar 24000 -ac 1 -i voice{{ $('Loop Over Items').item.json.row_number }}.pcm voice{{ $('Loop Over Items').item.json.row_number }}.wav"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        -224
+      ],
+      "id": "8c8d7cbd-a901-42b5-8d65-ed47326bea34",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $('Edit Fields').item.json.resources_dir }}voice{{ $('Loop Over Items').item.json.row_number }}.wav",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        -224
+      ],
+      "id": "e4d0b0ab-f0d3-4cd7-88c4-addd38350951",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2ff9b7f-96b8-4199-a4df-240e5e91ff52",
+              "name": "resources_dir",
+              "value": "/home/node/ouputs/",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -608,
+        -288
+      ],
+      "id": "7d486c2d-b7a2-46ee-aa47-9a23f4257873",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p  {{ $json.resources_dir }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        -272
+      ],
+      "id": "40dc9fa5-9531-41f2-8f59-626e9ebb0440",
+      "name": "Execute Command1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1136,
+        -480
+      ],
+      "id": "4d4c0957-aeb2-4f7c-85c0-1f35f72cba87",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        -224
+      ],
+      "id": "05de5b37-1498-4c15-94ab-40df6589764a"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1_78vnjCjJCk6IEuFd-LJTcDZNyBM8csqlRXbXDe10mI",
+          "mode": "list",
+          "cachedResultName": "1107 시지프스",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1_78vnjCjJCk6IEuFd-LJTcDZNyBM8csqlRXbXDe10mI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1552,
+        -224
+      ],
+      "id": "8ba87b5b-86bc-456e-8824-21f3a2335d23",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NluFAtjXO3gc5wIV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1rC31trHHcghoaFdkFSzsKOCQ0dkW0jaI",
+          "mode": "list",
+          "cachedResultName": "1107 수업",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1rC31trHHcghoaFdkFSzsKOCQ0dkW0jaI"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -352,
+        -656
+      ],
+      "id": "aced2b79-2541-4653-8924-553c35ab2b3c",
+      "name": "Upload file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nK05HecPu36m65ks",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "음성 프롬프트": "고대 그리스 철학에서 '테세우스의 배'는 부품을 하나씩 교체한 배가 여전히 같은 배인가 묻는 사고실험입니다. 시간이 흐르며 모든 부품이 바뀌더면 정체성은 무엇에 기반하는가라는 질문은 존재론적 딜레마를 제시합니다. 이 이야기는 개인과 집단, 사물의 본질과 연속성에 대한 깊은 성찰을 유도합니다.",
+          "submittedAt": "2025-11-07T15:49:54.420+09:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute Command1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c7e08dc0-9231-4a75-9986-23f831a02bf1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "97a4fc634bee8b70b897216f48a1db5b0a10c900708846c1b83e8e575b90ac50"
+  },
+  "id": "kqLTDw4VatiYDyqm",
+  "tags": []
+}

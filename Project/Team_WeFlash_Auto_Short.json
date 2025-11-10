@@ -1,0 +1,728 @@
+{
+  "name": "Team_WeFlash_Auto_Short",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "주제",
+        "formDescription": "자동화",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -256,
+        -752
+      ],
+      "id": "5ad5e173-6a41-4fdf-9bd2-b8d56c133ea1",
+      "name": "On form submission",
+      "webhookId": "af738a60-0dbd-4afb-9574-9cdf4963d16f"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyC1DKbWcZZmjiDh-gYKPwltZcgTH9oz_9E"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n        \"contents\": [{\n          \"parts\":[{\n            \"text\": \"{{ $('Limit').item.json.text }}\"\n          }]\n        }],\n        \"generationConfig\": {\n          \"responseModalities\": [\"AUDIO\"],\n          \"speechConfig\": {\n            \"voiceConfig\": {\n              \"prebuiltVoiceConfig\": {\n                \"voiceName\": \"Kore\"\n              }\n            }\n          }\n        }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        448,
+        128
+      ],
+      "id": "1f31ec94-d2c3-45b7-97ad-b0729e3f3c56",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "=candidates[0].content.parts[0].inlineData.data",
+        "options": {
+          "fileName": "=audio{{ $('runIndex1').item.json.runIndex }}.pcm "
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        144
+      ],
+      "id": "ef7bcbeb-f211-48da-b9fd-4c958b59cad9",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('audio edit').item.json.resources_dir }}audio{{ $('runIndex1').item.json.runIndex }}.pcm",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        144
+      ],
+      "id": "54a715e4-67bd-4b0b-afcf-110b9cd73091",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $('audio edit').item.json.resources_dir }} &&\nffmpeg -f s16le -ar 24000 -ac 1 -i audio{{ $('runIndex1').item.json.runIndex }}.pcm audio{{ $('runIndex1').item.json.runIndex }}.wav"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        144
+      ],
+      "id": "cacf6f40-2096-4b06-992f-0d3afbccc1b4",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $('audio edit').item.json.resources_dir }}audio{{ $('runIndex1').item.json.runIndex }}.wav",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        144
+      ],
+      "id": "cb23f480-9441-4510-a5db-283ce35e90c8",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        144
+      ],
+      "id": "168ec468-8e01-4249-882e-256cdc81518d"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "candidates[0].content.parts[1].inlineData.data",
+        "options": {
+          "fileName": "={{ $('audio edit').item.json.resources_dir }}image{{ $('runIndex1').item.json.runIndex }}.png"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1760,
+        -176
+      ],
+      "id": "7f524e42-e297-4ef7-9781-7402a4e7d9e6",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('audio edit').item.json.resources_dir }}image{{ $('runIndex1').item.json.runIndex }}.png",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2672,
+        -176
+      ],
+      "id": "581839a4-0d2b-47af-ab4a-2f9b722e922a",
+      "name": "Read/Write Files from Disk3"
+    },
+    {
+      "parameters": {
+        "command": "=cd {{ $('audio edit').item.json.resources_dir }} &&\nffmpeg -loop 1 -i image{{ $('runIndex1').item.json.runIndex }}.png -f s16le -ar 24000 -ac 1 -i audio{{ $('runIndex1').item.json.runIndex }}.pcm -c:v libx264 -c:a aac -pix_fmt yuv420p -shortest video{{ $('runIndex1').item.json.runIndex }}.mp4"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1872,
+        144
+      ],
+      "id": "bcbc48fc-b7cd-43f6-b1c6-067eb36ba345",
+      "name": "Execute Command2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -528,
+        -208
+      ],
+      "id": "2d9c36e9-4267-4a9f-8e52-2de7021fbfcd",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        3024,
+        -192
+      ],
+      "id": "f5e9ef6a-fd2a-40e7-9ce8-ffbdd66d8c6b"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "65f6b0c7-f851-42a3-805c-5d8bb54885d8",
+              "name": "runIndex",
+              "value": "={{ $runIndex + 1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        -192
+      ],
+      "id": "6f5b961a-508f-4eb7-a1d6-620be6be0628",
+      "name": "runIndex1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b2ff9b7f-96b8-4199-a4df-240e5e91ff52",
+              "name": "resources_dir",
+              "value": "/home/node/shorts/",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        -192
+      ],
+      "id": "ae0f18c3-6c11-4874-8dc3-9887f32ed008",
+      "name": "audio edit"
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p  {{ $json.resources_dir }}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -192
+      ],
+      "id": "66e5c9ef-c11c-4e65-be02-03cd194afbff",
+      "name": "Execute Command3"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-pro",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=당신은 10년 경력의 유튜브 영상기획자이자 카메라 전문가입니다. 입력된 주제만으로 \n\n[입력주제] {{ $json[\"주제\"] }}\n① 30초 이내 쇼츠 시나리오\n② 이에 맞는 자연스러운 나레이션 스크립트\n\n\n을 자동 생성하라. 결과는 카메라 입문자도 흥미롭게 이해할 수 있도록 전문성과 대중성을 균형 있게 담고, 오프닝–전개–클로징 구조로 완결된 1분 쇼츠 영상에 적합하게 구성하라.불필요한 사족은 없이 출력한 결과물만 보여줄 것. 나레이션만 써줄것. \n시간표시는 적지 말아줘\n각 문장은 한 줄짜리로 구성하고, 결과는 반드시 JSON 배열 형태로만 출력해.  \nJSON 외의 설명 문장, 제목, 코멘트는 절대 넣지 마.  \n출력 예시는 아래 형식을 정확히 따라줘.\n출력 형식 예시:\n[\n  \"첫 번째 문장\",\n  \"두 번째 문장\",\n  \"세 번째 문장\"\n]"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        848,
+        -752
+      ],
+      "id": "4de94a7e-144b-4960-9647-fd637d4b0c36",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "I6UCwH0PXZfkxC5P",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1HHl2ul2hraVUpnSHpVgdkbFKMozYoMYj5TVEneFtXkQ",
+          "mode": "list",
+          "cachedResultName": "WeFlash 스토리보드",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1HHl2ul2hraVUpnSHpVgdkbFKMozYoMYj5TVEneFtXkQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "id"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "주제": "={{ $json.candidates[0].content.parts[0].text }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "주제",
+              "displayName": "주제",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "스토리보드",
+              "displayName": "스토리보드",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -752
+      ],
+      "id": "e6e06625-6ae2-4ada-853b-06e24e2b35bd",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NluFAtjXO3gc5wIV",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyC1DKbWcZZmjiDh-gYKPwltZcgTH9oz_9E"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"contents\": [\n      {\n        \"parts\": [\n          {\n            \"text\": \"카메라 관련 숏츠 주제 1가지만 한국어로 추천해줘. 설명 필요 없이 주제만 30자 이내로 줘.\"\n          }\n        ]\n      }\n    ]\n  }\n        ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        128,
+        -752
+      ],
+      "id": "d551d924-2596-4898-9741-8e0f064cb6c3",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -480
+      ],
+      "id": "3694d3b0-074f-46db-bde6-a7bd21260ef1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -192
+      ],
+      "id": "2249ff25-e8c7-42df-b748-059162393ed2",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyC1DKbWcZZmjiDh-gYKPwltZcgTH9oz_9E"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"난 지금 쇼츠 영상을 만들고 있어.{{ $('Limit').item.json.text }}에 어울리는 이미지 하나만 생성해줘.\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1472,
+        -176
+      ],
+      "id": "1afccd11-296b-4c31-a187-0e1bacfecb38",
+      "name": "HTTP Request3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.content.parts[0].text;\nlet output = [];\n\nif (Array.isArray(data)) {\n  // ✅ 배열이면: 한 줄씩 아이템 생성\n  output = data.map((line, index) => ({\n    json: {\n      line_id: index + 1,\n      text: line\n    }\n  }));\n} else if (typeof data === 'object' && data !== null) {\n  // ✅ 객체이면: key 기준으로 나눔\n  output = Object.entries(data).map(([key, value]) => ({\n    json: {\n      line_id: key,\n      text: value\n    }\n  }));\n} else if (typeof data === 'string') {\n  // ✅ 문자열이면: 혹시 JSON 문자열일 가능성 있음\n  try {\n    const parsed = JSON.parse(data);\n    if (Array.isArray(parsed)) {\n      output = parsed.map((line, index) => ({\n        json: {\n          line_id: index + 1,\n          text: line\n        }\n      }));\n    } else if (typeof parsed === 'object') {\n      output = Object.entries(parsed).map(([key, value]) => ({\n        json: {\n          line_id: key,\n          text: value\n        }\n      }));\n    }\n  } catch (e) {\n    output = [{ json: { error: '파싱 실패', raw: data } }];\n  }\n} else {\n  output = [{ json: { error: '지원되지 않는 형식', raw: data } }];\n}\n\nreturn output;\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        -496
+      ],
+      "id": "dc051d38-c21c-47dd-8527-abcdc1c78539",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1JNyZRqqrSJKFjse73xQGOO_94wJwRbtL",
+          "mode": "list",
+          "cachedResultName": "1110_Autoshort",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1JNyZRqqrSJKFjse73xQGOO_94wJwRbtL"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2480,
+        -480
+      ],
+      "id": "0bb43b02-847d-4ccb-8f6c-f23cb38e1169",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nK05HecPu36m65ks",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Execute Command2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk3": {
+      "main": [
+        [
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command2": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "runIndex1": {
+      "main": [
+        [
+          {
+            "node": "audio edit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "audio edit": {
+      "main": [
+        [
+          {
+            "node": "Execute Command3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command3": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "runIndex1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ba76cfe2-de1b-4f78-ac88-f26dca326487",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "97a4fc634bee8b70b897216f48a1db5b0a10c900708846c1b83e8e575b90ac50"
+  },
+  "id": "SLaHGIrw6ywx5JVB",
+  "tags": []
+}

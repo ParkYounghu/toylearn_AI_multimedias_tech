@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        448,
-        128
+        128,
+        144
       ],
       "id": "1f31ec94-d2c3-45b7-97ad-b0729e3f3c56",
       "name": "HTTP Request"
@@ -55,7 +55,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        880,
+        352,
         144
       ],
       "id": "ef7bcbeb-f211-48da-b9fd-4c958b59cad9",
@@ -70,7 +70,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1120,
+        544,
         144
       ],
       "id": "54a715e4-67bd-4b0b-afcf-110b9cd73091",
@@ -83,7 +83,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1328,
+        736,
         144
       ],
       "id": "cacf6f40-2096-4b06-992f-0d3afbccc1b4",
@@ -97,7 +97,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1552,
+        928,
         144
       ],
       "id": "cb23f480-9441-4510-a5db-283ce35e90c8",
@@ -109,7 +109,7 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        2224,
+        1296,
         144
       ],
       "id": "168ec468-8e01-4249-882e-256cdc81518d"
@@ -125,8 +125,8 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1760,
-        -176
+        912,
+        -192
       ],
       "id": "7f524e42-e297-4ef7-9781-7402a4e7d9e6",
       "name": "Convert to File1"
@@ -140,8 +140,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2672,
-        -176
+        1088,
+        -192
       ],
       "id": "581839a4-0d2b-47af-ab4a-2f9b722e922a",
       "name": "Read/Write Files from Disk3"
@@ -153,7 +153,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1872,
+        1120,
         144
       ],
       "id": "bcbc48fc-b7cd-43f6-b1c6-067eb36ba345",
@@ -166,22 +166,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -528,
+        -384,
         -208
       ],
       "id": "2d9c36e9-4267-4a9f-8e52-2de7021fbfcd",
       "name": "Loop Over Items1"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me1",
-      "typeVersion": 1,
-      "position": [
-        3024,
-        -192
-      ],
-      "id": "f5e9ef6a-fd2a-40e7-9ce8-ffbdd66d8c6b"
     },
     {
       "parameters": {
@@ -200,7 +189,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        320,
+        112,
         -192
       ],
       "id": "6f5b961a-508f-4eb7-a1d6-620be6be0628",
@@ -223,7 +212,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        704,
+        304,
         -192
       ],
       "id": "ae0f18c3-6c11-4874-8dc3-9887f32ed008",
@@ -236,7 +225,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1040,
+        512,
         -192
       ],
       "id": "66e5c9ef-c11c-4e65-be02-03cd194afbff",
@@ -373,8 +362,8 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        1040,
-        -480
+        944,
+        -496
       ],
       "id": "3694d3b0-074f-46db-bde6-a7bd21260ef1",
       "name": "Split Out"
@@ -411,8 +400,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1456,
-        -208
+        704,
+        -192
       ],
       "id": "1afccd11-296b-4c31-a187-0e1bacfecb38",
       "name": "HTTP Request3"
@@ -424,7 +413,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -448,
+        256,
         -496
       ],
       "id": "dc051d38-c21c-47dd-8527-abcdc1c78539",
@@ -525,7 +514,7 @@
       "main": [
         [
           {
-            "node": "Replace Me1",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -538,17 +527,6 @@
         [
           {
             "node": "Limit",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Replace Me1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -681,7 +659,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "cd3528bf-d075-4642-9e74-67db6b268a2c",
+  "versionId": "31f5547c-b14d-4772-a263-771e3c440dee",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "97a4fc634bee8b70b897216f48a1db5b0a10c900708846c1b83e8e575b90ac50"

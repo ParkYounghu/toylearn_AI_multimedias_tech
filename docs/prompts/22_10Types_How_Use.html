@@ -11,141 +11,161 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            /* 다크 모드 기본 설정 */
-            background-color: #111827; /* Gray-900 */
-            color: #E5E7EB; /* Gray-200 */
+            /* Dark Mode Default (Satisfies Design Team) */
+            background-color: #111827; 
+            color: #E5E7EB; 
+            transition: background-color 0.3s, color 0.3s; 
         }
-        /* 스크롤바 디자인 (다크 모드에 맞춤) */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #1F2937; /* Gray-800 */
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #4B5563; /* Gray-600 */
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #6B7280; /* Gray-500 */
-        }
+        /* Custom Scrollbar for Dark Mode */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1F2937; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+
+        /* Light Mode Overrides (For Theme Toggle Flexibility) */
+        .light-mode { background-color: #F9FAFB; color: #1F2937; }
+        .light-mode .bg-gray-800 { background-color: #FFFFFF; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1); }
+        .light-mode .bg-gray-900 { background-color: #F3F4F6; }
+        .light-mode .text-gray-400 { color: #6B7280; }
+        .light-mode .text-gray-500 { color: #9CA3AF; }
+        .light-mode .text-gray-300 { color: #374151; }
+        .light-mode .border-gray-700 { border-color: #E5E7EB; }
+        .light-mode .bg-gray-700 { background-color: #F3F4F6; }
+        .light-mode .hover\:bg-gray-700:hover { background-color: #E5E7EB; }
+        .light-mode .bg-gray-700 { background-color: #E5E7EB; } 
+        .light-mode .text-gray-200 { color: #374151; }
+        .light-mode .placeholder-gray-400 { color: #9CA3AF; }
+        .light-mode .bg-gray-700.sticky { background-color: #F9FAFB; } 
+        .light-mode .custom-scrollbar::-webkit-scrollbar-track { background: #E5E7EB; }
+        .light-mode .custom-scrollbar::-webkit-scrollbar-thumb { background: #D1D5DB; }
     </style>
 </head>
 <body class="min-h-screen p-4 lg:p-8">
 
     <div class="max-w-7xl mx-auto">
-        <!-- 대시보드 헤더 -->
+        <!-- Dashboard Header -->
         <header class="mb-6 pb-4 border-b border-gray-700 flex justify-between items-center">
             <h1 class="text-3xl font-bold text-indigo-400">네오스트림 영상 승인 대시보드 V1.0</h1>
-            <div class="text-sm text-gray-400">프론트엔드 개발팀: 긴급 프로토타입</div>
+            <div class="text-sm text-gray-400 flex items-center space-x-3"> 
+                <span class="font-medium hidden sm:inline">프론트엔드 개발팀: 긴급 프로토타입</span>
+                <!-- Theme Toggle Button (UX Improvement) -->
+                <button id="theme-toggle" onclick="toggleTheme()" class="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition duration-200">
+                    <!-- Sun Icon (Light Mode) -->
+                    <svg id="sun-icon" class="w-5 h-5 text-yellow-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <!-- Moon Icon (Dark Mode Default) -->
+                    <svg id="moon-icon" class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+            </div>
         </header>
 
-        <!-- 메인 콘텐츠: 영상 영역(2/3) + 목록 영역(1/3) -->
+        <!-- Main Content: Video (2/3) + List (1/3) (YouTube Studio Inspired Layout) -->
         <div class="grid lg:grid-cols-3 gap-8">
 
-            <!-- 1. 영상 플레이어 및 댓글 섹션 (2/3 영역) -->
+            <!-- 1. Video Player and Comments Section (2/3 Area - Intuitive UI) -->
             <div class="lg:col-span-2 space-y-6">
-                <!-- 1.1 영상 플레이어 영역 -->
+                <!-- 1.1 Video Player Area -->
                 <div id="video-player" class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden relative aspect-video">
-                    <!-- 비디오 플레이스홀더 (실제 영상 embed 필요) -->
+                    <!-- Video Placeholder (Mock) -->
                     <div class="absolute inset-0 flex flex-col justify-center items-center bg-gray-900/90">
                         <svg class="w-16 h-16 text-indigo-400 mb-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M20 5H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V7a2 2 0 00-2-2zM4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V7a1 1 0 011-1zm4 3.5l6 3.5-6 3.5V9.5z"/>
                         </svg>
-                        <p class="text-gray-400 text-lg font-medium">현재 영상: 25화 - AI와 메타버스의 결합</p>
-                        <p id="mock-time" class="text-gray-500 mt-1">현재 시간: 00:00</p>
+                        <p class="text-gray-400 text-lg font-medium">Current Video: 25화 - AI와 메타버스의 결합</p>
+                        <p id="mock-time" class="text-gray-500 mt-1">Current Time: 00:00</p>
                     </div>
                 </div>
 
-                <!-- 1.2 승인/반려 컨트롤 -->
+                <!-- 1.2 Approval/Rejection Controls -->
                 <div class="flex justify-between items-center p-4 bg-gray-800 rounded-xl shadow-lg">
-                    <h2 class="text-xl font-semibold">리뷰 상태: <span id="review-status" class="text-yellow-400">대기 중</span></h2>
+                    <h2 class="text-xl font-semibold">Review Status: <span id="review-status" class="text-yellow-400">Pending</span></h2>
                     <div class="space-x-3">
                         <button onclick="setStatus('Approved')" class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition duration-200 shadow-md">
-                            ✅ 최종 승인
+                            ✅ Approve
                         </button>
                         <button onclick="setStatus('Rejected')" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition duration-200 shadow-md">
-                            ❌ 반려 (수정 요청)
+                            ❌ Reject (Revise)
                         </button>
                     </div>
                 </div>
                 
-                <!-- 1.3 타임스탬프 댓글 기능 -->
+                <!-- 1.3 Timestamp Comment Feature -->
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">타임스탬프 댓글 및 리뷰</h2>
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">Timestamp Comments & Review</h2>
                     
-                    <!-- 댓글 입력 폼 -->
+                    <!-- Comment Input Form -->
                     <div class="flex mb-4 space-x-3">
-                        <input type="text" id="comment-input" placeholder="리뷰 내용을 입력하세요. (ex. 10:30, BGM 볼륨 키워주세요)" class="flex-grow p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-200 placeholder-gray-400">
+                        <input type="text" id="comment-input" placeholder="Enter review comment (e.g., 10:30, Increase BGM volume)" class="flex-grow p-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-200 placeholder-gray-400">
                         <button onclick="addComment()" class="px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg transition duration-200">
-                            댓글 등록
+                            Post Comment
                         </button>
                     </div>
 
-                    <!-- 댓글 목록 -->
+                    <!-- Comment List -->
                     <div id="comments-list" class="space-y-3 custom-scrollbar h-64 overflow-y-auto">
-                        <!-- 초기 Mock 댓글 -->
+                        <!-- Initial Mock Comments -->
                         <div class="bg-gray-700 p-3 rounded-lg border-l-4 border-yellow-500">
-                            <span class="text-sm font-medium text-yellow-300 mr-2">[00:15]</span>
+                            <!-- Clickable Timestamp (UX Improvement) -->
+                            <button onclick="jumpToTime('00:15')" class="text-sm font-medium text-yellow-300 mr-2 hover:underline focus:outline-none">[00:15]</button>
                             <span class="text-gray-300">인트로 BGM이 너무 길어요. 5초로 줄이는 게 좋을 것 같습니다.</span>
-                            <span class="text-xs text-gray-400 float-right">기획팀 (10:05 AM)</span>
+                            <span class="text-xs text-gray-400 float-right">Planning Team (10:05 AM)</span>
                         </div>
                         <div class="bg-gray-700 p-3 rounded-lg border-l-4 border-green-500">
-                            <span class="text-sm font-medium text-green-300 mr-2">[00:45]</span>
+                            <!-- Clickable Timestamp (UX Improvement) -->
+                            <button onclick="jumpToTime('00:45')" class="text-sm font-medium text-green-300 mr-2 hover:underline focus:outline-none">[00:45]</button>
                             <span class="text-gray-300">이 부분 자막 컬러 대비가 좋습니다. 그대로 진행해 주세요.</span>
-                            <span class="text-xs text-gray-400 float-right">디자인팀 (10:10 AM)</span>
+                            <span class="text-xs text-gray-400 float-right">Design Team (10:10 AM)</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. 영상 목록 테이블 (1/3 영역) -->
+            <!-- 2. Video List Table (1/3 Area - Data Dense) -->
             <div class="lg:col-span-1">
                 <div class="bg-gray-800 p-6 rounded-xl shadow-lg">
-                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">영상 목록 (데이터 밀집형)</h2>
+                    <h2 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">Video List (Data Dense)</h2>
                     
                     <div class="overflow-x-auto custom-scrollbar h-[calc(100vh-18rem)]">
                         <table class="min-w-full divide-y divide-gray-700 text-sm">
                             <thead class="bg-gray-700 sticky top-0">
                                 <tr>
                                     <th class="px-4 py-3 text-left font-medium text-gray-300">ID</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-300">제목</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-300">담당</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-300">상태</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-300">Title</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-300">Owner</th>
+                                    <th class="px-4 py-3 text-left font-medium text-gray-300">Status</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-700">
-                                <!-- 테이블 데이터 (운영팀 요구사항: 데이터 밀집) -->
+                                <!-- Table Data Rows -->
                                 <tr class="bg-gray-800 hover:bg-gray-700 cursor-pointer transition duration-150" onclick="loadVideo('25')">
                                     <td class="px-4 py-3 text-gray-400 font-mono">25</td>
-                                    <td class="px-4 py-3 text-white font-medium">AI와 메타버스의 결합</td>
+                                    <td class="px-4 py-3 text-white font-medium">AI and Metaverse Fusion</td>
                                     <td class="px-4 py-3 text-gray-400">김PD</td>
-                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-400/20 text-yellow-400">검토 중</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-400/20 text-yellow-400">Pending</span></td>
                                 </tr>
                                 <tr class="bg-gray-800 hover:bg-gray-700 cursor-pointer transition duration-150" onclick="loadVideo('24')">
                                     <td class="px-4 py-3 text-gray-400 font-mono">24</td>
-                                    <td class="px-4 py-3 text-white">최신 IT 트렌드 요약</td>
+                                    <td class="px-4 py-3 text-white">Latest IT Trends Summary</td>
                                     <td class="px-4 py-3 text-gray-400">이PD</td>
-                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-600/20 text-green-400">승인 완료</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-600/20 text-green-400">Approved</span></td>
                                 </tr>
                                 <tr class="bg-gray-800 hover:bg-gray-700 cursor-pointer transition duration-150" onclick="loadVideo('23')">
                                     <td class="px-4 py-3 text-gray-400 font-mono">23</td>
-                                    <td class="px-4 py-3 text-white">MZ세대가 열광하는 Tech</td>
+                                    <td class="px-4 py-3 text-white">Tech that MZ Loves</td>
                                     <td class="px-4 py-3 text-gray-400">박PD</td>
-                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-600/20 text-red-400">반려</span></td>
+                                    <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-600/20 text-red-400">Rejected</span></td>
                                 </tr>
-                                <!-- 추가 데이터 행... -->
+                                <!-- Dummy Data Injection Script -->
                                 <script>
-                                    // 20개 더미 데이터 생성
+                                    // Inject 20 more dummy rows for data density
                                     for(let i = 22; i >= 3; i--) {
-                                        const status = i % 5 === 0 ? '반려' : i % 3 === 0 ? '검토 중' : '승인 완료';
-                                        const statusClass = status === '반려' ? 'bg-red-600/20 text-red-400' : status === '검토 중' ? 'bg-yellow-400/20 text-yellow-400' : 'bg-green-600/20 text-green-400';
+                                        const status = i % 5 === 0 ? 'Rejected' : i % 3 === 0 ? 'Pending' : 'Approved';
+                                        const statusClass = status === 'Rejected' ? 'bg-red-600/20 text-red-400' : status === 'Pending' ? 'bg-yellow-400/20 text-yellow-400' : 'bg-green-600/20 text-green-400';
                                         const row = document.createElement('tr');
                                         row.className = 'bg-gray-800 hover:bg-gray-700 cursor-pointer transition duration-150';
                                         row.innerHTML = `
                                             <td class="px-4 py-3 text-gray-400 font-mono">${i}</td>
-                                            <td class="px-4 py-3 text-white">영상 제목 ${i}번</td>
-                                            <td class="px-4 py-3 text-gray-400">최PD</td>
+                                            <td class="px-4 py-3 text-white">Video Title ${i}</td>
+                                            <td class="px-4 py-3 text-gray-400">Choi PD</td>
                                             <td class="px-4 py-3"><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">${status}</span></td>
                                         `;
                                         document.querySelector('tbody').appendChild(row);
@@ -160,54 +180,64 @@
         </div>
     </div>
 
-    <!-- JavaScript 로직 -->
+    <!-- JavaScript Logic -->
     <script>
-        // 현재 사용자 (Mock)
-        const currentUser = "프론트엔드 개발자";
+        // Current user (Mock)
+        const currentUser = "Frontend Developer";
 
-        // 1. 영상 시간 및 타임스탬프 기능
+        // 1. Mock Video Time Management
         let mockTimeSeconds = 0;
         let interval;
 
-        // Mock 시간 업데이트 함수
+        // Function to format and update the Mock Time
         function updateMockTime() {
             mockTimeSeconds++;
             const minutes = Math.floor(mockTimeSeconds / 60).toString().padStart(2, '0');
             const seconds = (mockTimeSeconds % 60).toString().padStart(2, '0');
             const timeString = `${minutes}:${seconds}`;
-            document.getElementById('mock-time').textContent = `현재 시간: ${timeString}`;
+            document.getElementById('mock-time').textContent = `Current Time: ${timeString}`;
             return timeString;
         }
 
-        // 1.1. 댓글 추가 함수 (타임스탬프 자동 포함)
+        // 5. Jump to Time Function (UX Improvement)
+        function jumpToTime(timeString) {
+            const [minutes, seconds] = timeString.split(':').map(Number);
+            mockTimeSeconds = (minutes * 60) + seconds;
+            
+            // Update time immediately and notify user
+            updateMockTime(); 
+            alertMessage(`⏩ Moved to ${timeString} location.`, 'bg-blue-600');
+        }
+
+        // 1.1. Add Comment Function (Timestamp auto-tagging)
         function addComment() {
             const input = document.getElementById('comment-input');
             const text = input.value.trim();
-            const time = document.getElementById('mock-time').textContent.replace('현재 시간: ', '');
+            const time = document.getElementById('mock-time').textContent.replace('Current Time: ', '');
             const commentsList = document.getElementById('comments-list');
             
             if (text === "") {
-                input.placeholder = "내용을 입력해주세요!";
+                input.placeholder = "Please enter your content!";
                 return;
             }
 
             const newComment = document.createElement('div');
-            // 댓글 작성자에 따라 다른 색상/테두리 설정 (UX 개선)
-            const teamColor = currentUser.includes('개발자') ? 'blue' : 'yellow'; 
+            // Assign color based on user for better differentiation
+            const teamColor = currentUser.includes('Developer') ? 'blue' : 'yellow'; 
             
             newComment.className = `bg-gray-700 p-3 rounded-lg border-l-4 border-${teamColor}-500 transition duration-300`;
             newComment.innerHTML = `
-                <span class="text-sm font-medium text-${teamColor}-300 mr-2">[${time}]</span>
+                <button onclick="jumpToTime('${time}')" class="text-sm font-medium text-${teamColor}-300 mr-2 hover:underline focus:outline-none">[${time}]</button>
                 <span class="text-gray-300">${text}</span>
                 <span class="text-xs text-gray-400 float-right">${currentUser} (Just now)</span>
             `;
 
-            commentsList.prepend(newComment); // 최신 댓글이 위로 오도록 prepend 사용
+            commentsList.prepend(newComment); // Prepend to show latest comment first
             input.value = "";
-            input.placeholder = "리뷰 내용을 입력하세요.";
+            input.placeholder = "Enter review comment (e.g., 10:30, Increase BGM volume)";
         }
 
-        // 2. 승인/반려 상태 변경 함수
+        // 2. Set Review Status Function
         function setStatus(status) {
             const statusEl = document.getElementById('review-status');
             let colorClass = '';
@@ -215,49 +245,75 @@
 
             if (status === 'Approved') {
                 colorClass = 'text-green-400';
-                statusText = '최종 승인 완료';
-                alertMessage('✅ 최종 승인 처리되었습니다.', 'bg-green-600');
+                statusText = 'Final Approved';
+                alertMessage('✅ Final approval completed.', 'bg-green-600');
             } else if (status === 'Rejected') {
                 colorClass = 'text-red-400';
-                statusText = '반려 (수정 요청 필요)';
-                alertMessage('❌ 영상이 반려되었습니다.', 'bg-red-600');
+                statusText = 'Rejected (Revision Needed)';
+                alertMessage('❌ Video rejected.', 'bg-red-600');
             } else {
                 colorClass = 'text-yellow-400';
-                statusText = '대기 중';
+                statusText = 'Pending';
             }
 
-            // 클래스 변경으로 시각적 피드백 제공
+            // Visual feedback update
             statusEl.className = colorClass;
             statusEl.textContent = statusText;
         }
 
-        // 3. 임시 알림 메시지 (alert() 대체)
+        // 3. Custom Alert Message (Replacing alert())
         function alertMessage(message, bgColor) {
             const notification = document.createElement('div');
-            notification.className = `fixed bottom-4 right-4 ${bgColor} text-white p-4 rounded-lg shadow-xl transition-opacity duration-300 z-50`;
+            notification.className = `fixed bottom-4 right-4 ${bgColor} text-white p-4 rounded-lg shadow-xl transition-opacity duration-300 z-50 opacity-100`;
             notification.textContent = message;
             document.body.appendChild(notification);
             
-            // 3초 후 사라지도록 설정
+            // Disappear after 3 seconds
             setTimeout(() => {
                 notification.style.opacity = '0';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
         }
+        
+        // 6. Theme Toggle Function (Satisfying Design Team and ensuring flexibility)
+        function toggleTheme() {
+            const body = document.body;
+            const moonIcon = document.getElementById('moon-icon');
+            const sunIcon = document.getElementById('sun-icon');
 
-        // 4. 모의 영상 로딩 (UI 업데이트)
-        function loadVideo(id) {
-            alertMessage(`🔄 영상 ID ${id}번을 로드했습니다. (Mock)`, 'bg-indigo-600');
-            // 시간 초기화 및 타이머 재시작
-            clearInterval(interval);
-            mockTimeSeconds = 0;
-            interval = setInterval(updateMockTime, 1000); // 1초마다 시간 업데이트 시작
+            // Toggle light-mode class
+            const isDarkModeNow = !body.classList.contains('light-mode');
+
+            if (isDarkModeNow) {
+                // Dark -> Light Mode Transition
+                body.classList.add('light-mode');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                alertMessage('💡 Switched to Light Mode.', 'bg-yellow-500');
+
+            } else {
+                // Light -> Dark Mode Transition
+                body.classList.remove('light-mode');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                alertMessage('🌑 Switched to Dark Mode.', 'bg-indigo-600');
+            }
         }
 
-        // 초기 로드 시 타이머 시작 및 초기 알림
+        // 4. Mock Video Load Function
+        function loadVideo(id) {
+            // Update UI/Data based on ID (Mock)
+            alertMessage(`🔄 Loading Video ID ${id}. (Mock)`, 'bg-indigo-600');
+            // Reset and restart timer
+            clearInterval(interval);
+            mockTimeSeconds = 0;
+            interval = setInterval(updateMockTime, 1000); // Start updating time every second
+        }
+
+        // Initial load setup
         window.onload = function() {
             loadVideo('25'); 
-            alertMessage(`✅ 개발 프로토타입 준비 완료. (다크 모드 적용)`, 'bg-gray-600');
+            alertMessage(`✅ Developer Prototype Ready. (Dark Mode Applied)`, 'bg-gray-600');
         };
     </script>
 

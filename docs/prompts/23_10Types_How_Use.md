@@ -1,6 +1,9 @@
 ## 프롬프트 유형과 선택 이유
 ## 작성 위해 추가 필요 요건
 ## 가상 문제 상황
+
+```
+
 1. 가상 문제 상황 (Scenario Challenge)
 페르소나 (Persona):
 직무: 헬스케어 스타트업 '웰니스 핏(Wellness Fit)'의 주니어 PM (Product Manager)
@@ -19,6 +22,9 @@
 2. 훈련 초점 (Training Focus)
 이 문제는 [구조적 분석 및 세분화 (Structural Breakdown)] 능력을 평가.
 단순히 "아이디어를 내줘"가 아니라, 모호한 요청을 **체계적인 카테고리(Front-end, Back-end, UX/UI 등)**로 나누어 구체화하는 프롬프팅 스킬이 필요.
+
+```
+
 ## 문제 해결 프롬프트 
 
 ```
